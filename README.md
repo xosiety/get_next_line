@@ -107,4 +107,4 @@ potremo andare a compilare il codice attraverso un makefile simile a questo:
 
 Testando diversi valori per BUFFER_SIZE e con diversi file di testo, potremo verificare che la funzione funzioni correttamente.
 
-Potremmo anche utilizzare anche il tester di **[Tripouille]**(https://github.com/Tripouille/gnlTester) che metterà a dura prova la nostra funzione.
+Potremmo anche utilizzare anche il tester di [Tripouille](https://github.com/Tripouille/gnlTester) che metterà a dura prova la nostra funzione.
