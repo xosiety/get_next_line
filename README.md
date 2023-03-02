@@ -1,5 +1,6 @@
 # 📖 get_next_line
- Che si tratti di un file, di uno standard input o prossimamente di una connessione di rete, avremo sempre bisogno di un modo per leggere il contenuto di un file riga per riga.
+
+ Che si tratti di un file, di uno standard input o prossimamente di una connessione di rete, avremo sempre bisogno di un modo per leggere il contenuto di un file line by line.
 
 #### È ora di iniziare a lavorare su questa funzione essenziale per i progetti futuri.
 
@@ -14,15 +15,18 @@
 
 ## 💡 Introduzione
 
-**get_next_line** ci consentirà di approfondire le funzioni *open*, *read* e *close*, le variabili statiche e i file-descriptor.
+**get_next_line** ci consentirà di approfondire le funzioni *open*, *read* e *close*, le **variabili statiche** e i file-descriptor.
 
->get_next_line ritorna una linea letta da un file descriptor.
+>get_next_line consiste nel codificare una funzione che restituisce una linea alla volta da un file di testo.
 
+In questo progetto vedremo come i files vengono aperti letti e richiusi in un OS,
+e come vengono interpretati da un linguaggio di programmazione per un ulteriore analisi.
+Questo compito è fondamentale per un futuro programmatore poiché molto del tempo viene speso
+sulla manipolazione dei files per la gestione dei dati e la loro relativa [**persistenza**](https://en.wikipedia.org/wiki/Persistence_(computer_science).
 
-Verrà prototipata come segue:
+la nostra funzione verrà prototipata come segue:
 
-    int get_next_line(int fd, char **line);
-
+> int get_next_line(int fd, char **line);
 
 ## 🔍 Variabili statiche
 
@@ -45,39 +49,62 @@ distinguere e concatenare le nostre linee di testo.
 | **strchr**  | individuerà il nostro carattere "\n" tra una linea e l'altra |
 | **strjoin** | concatenerà le nostre linee di testo in un unica matrice     |
 
-
 ## ⏭️ ft_get_next_line
 
-    Ogni volta che la funzione viene eseguita, controlla se c'è una nuova riga nella variabile statica. 
-    In caso contrario, viene eseguita una nuova lettura, aumentando la dimensione della variabile statica. 
-    Quando viene trovata una linea di testo, viene restituita e la variabile statica rimuove quella riga restringendosi. 
-    Se non viene trovata alcuna nuova riga, il programma si riavvia, in maniera ricorsiva, consentendoci quindi 
-    di leggere il testo disponibile nel file descriptor, una riga alla volta, fino alla fine del file.
+Da un fd **get_next_line** inserirà in un puntatore a string line la riga successiva di un input 
+che non è stato ancora letto da un certo descrittore di file fd. 
+La funzione deve lavorare con qualsiasi lunghezza di nuova riga e con più descrittori di file contemporaneamente 
+utilizzando solo su una variabile statica e no variabili globali.
 
+    La funzione utilizza una sola variabile statica per ricordare cosa è rimasto dall'ultima chiamata da read. 
+    Questa memoria statica è un puntatore a un puntatore dove al primo livello sono presenti più slot di memoria. 
+    Ciascuno di questi slot è unico per ogni descrittore di file, punterà a una stringa che leggerà il buff rimanente 
+    dall'ultima chiamata (sempre se il descrittore di file è stato chiamato).
+    La funzione controllerà se è rimasto un buffer passato ogni volta che viene chiamato e lo aggiungerà alla riga del risultato. 
+    poi andrà a leggere il file vero e proprio concatenando quanto letto ad ogni ciclo alla riga del risultato.
+    Quando incontra un buffer con una nuova riga, concatena alla riga del risultato solo il buffer fino alla nuova riga 
+    e il nuovo buffer verrà aggiornato alla sotto-stringa dopo la nuova riga.
 
-| Funzione             | Descrizione |
-|:---------------------|:------------|
-| **ft_get_line**      |             |
-| **ft_new_line**      |             |
-| **ft_get_next_line** |             |
-| **get_next_line**    |             |
-
+| Funzione             | Descrizione                                                                                                                                                                                                          |
+|:---------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ft_get_line**      | Legge i dati dal file descriptor in blocchi di dimensione BUFFER_SIZE e concatena i dati letti con la linea precedente. Quando viene trovato il carattere newline, la funzione termina e restituisce la linea letta. |
+| **ft_new_line**      | Crea una nuova stringa contenente i dati dopo il carattere newline. Questa funzione alloca dinamicamente la memoria per la nuova stringa e copia i dati dopo il carattere /n.                                        |
+| **ft_get_next_line** | Questa funzione crea una nuova stringa contenente i dati fino al carattere /n. La funzione alloca dinamicamente la memoria per la nuova stringa e copia i dati dalla linea letta.                                    |
+| **get_next_line**    | Coordina l'intero processo e restituisce la prima linea o quel che ne rimane                                                                                                                                         |
 
 ____________
 
-
 ## 🛠️ Testing
 
+Una voltra scritta una funzione main e datogli in pasto il nostro file .txt 
+potremo andare a compilare il codice attraverso un makefile simile a questo:
 
-Compileremo il codice come segue:
+    NAME = test_gnl
 
-    gcc -Wall -Wextra -Werror -D 
-    BUFFER_SIZE=42 
-    get_next_line.c 
-    get_next_line_utils.c 
-    get_next_line.h main.c 
-    -o test_gnl
+    SRCS = main.c get_next_line.c get_next_line_utilis.c  
+
+    OBJS = $(SRCS:.c=.o)
+
+    CC = gcc
+
+    CFLAGS = -Wall -Wextra -Werror -D BUFFER_SIZE=42
+
+    all: $(NAME)
+
+    $(NAME): $(OBJS)
+    $(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+
+    clean:
+    rm -f $(OBJS)
+
+    fclean: clean
+    rm -f $(NAME)
+
+    re: fclean all
+
+    .PHONY: all clean fclean re
 
 
+Testando diversi valori per BUFFER_SIZE e con diversi file di testo, potremo verificare che la funzione funzioni correttamente.
 
-Testando diversi valori per BUFFER_SIZE.
+Potremmo anche utilizzare anche il tester di **[Tripouille]**(https://github.com/Tripouille/gnlTester) che metterà a dura prova la nostra funzione.
