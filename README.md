@@ -21,8 +21,8 @@
 
 In questo progetto vedremo come i files vengono aperti letti e richiusi in un OS,
 e come vengono interpretati da un linguaggio di programmazione per un ulteriore analisi.
-Questo compito è fondamentale per un futuro programmatore poiché molto del tempo viene speso
-sulla manipolazione dei files per la gestione dei dati e la loro relativa [**persistenza**](https://en.wikipedia.org/wiki/Persistence_(computer_science).
+
+Questo compito è fondamentale per un futuro programmatore poiché molto del tempo viene speso per la gestione dei dati e la loro [**persistenza**](https://en.wikipedia.org/wiki/Persistence_(computer_science).
 
 la nostra funzione verrà prototipata come segue:
 
@@ -51,12 +51,11 @@ distinguere e concatenare le nostre linee di testo.
 
 ## ⏭️ ft_get_next_line
 
-Da un fd **get_next_line** inserirà in un puntatore a string line la riga successiva di un input 
-che non è stato ancora letto da un certo descrittore di file fd. 
-La funzione deve lavorare con qualsiasi lunghezza di nuova riga e con più descrittori di file contemporaneamente 
-utilizzando solo su una variabile statica e no variabili globali.
+ **get_next_line** inserirà in un puntatore ad una stringa la linea letta da un file descriptor. 
+La funzione deve lavorare con qualsiasi lunghezza e con più descrittori di file contemporaneamente 
+utilizzando solo su una variabile statica e nessuna variabile globali.
 
-    La funzione utilizza una sola variabile statica per ricordare cosa è rimasto dall'ultima chiamata da read. 
+    La funzione utilizza una sola variabile statica per ricordare cosa è rimasto dall'ultima chiamata di read. 
     Questa memoria statica è un puntatore a un puntatore dove al primo livello sono presenti più slot di memoria. 
     Ciascuno di questi slot è unico per ogni descrittore di file, punterà a una stringa che leggerà il buff rimanente 
     dall'ultima chiamata (sempre se il descrittore di file è stato chiamato).
@@ -76,7 +75,7 @@ ____________
 
 ## 🛠️ Testing
 
-Una voltra scritta una funzione main e datogli in pasto il nostro file .txt 
+Una volta scritta una funzione main e datogli in pasto il nostro file .txt 
 potremo andare a compilare il codice attraverso un makefile simile a questo:
 
     NAME = test_gnl
